@@ -66,20 +66,34 @@ def ToBase1048576(num):
 
 
 def FromBase1048576(unicodestring, posiitivity):
-    chars = splitnum(unicodestring)
+    chars = unicodestring.split('.')
+    upperchars = splitnum(chars[0])
+    lowerchars = splitnum(chars[1])
 
     digits = []
+    lowerdigits = []
+
     
     if not posiitivity:
-        
-        for char in range(1, len(chars)):
-            digits.append(ord(chars[char]))
+        for upperchar in range(1, len(upperchars)):
+            digits.append(ord(upperchars[upperchar]))
 
         digits.reverse()
 
         for num in digits:
             final += (num * pow(1048576, (digits.index(num-1))))
+
+        for lowerchar in range(1, len(lowerchars)):
+            lowerdigits.append(ord(lowerchars[lowerchar]))
+
+        lowerdigits.reverse()
+
+        for lowernum in lowerdigits:
+            final += (num * pow(1048576, -(digits.index(num-1))))
+            
         return -final
+
+    
 
                 
     else:
