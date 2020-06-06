@@ -6,7 +6,6 @@
 
 # todo: cannot decode base 1048576 data
 
-
 import math
 
 MAX_DECIMAL_PLACES = 10
@@ -15,7 +14,6 @@ def splitnum(num):
     return [char for char in num]
 
 def convert(s): 
-  
     new = "" 
   
     for x in s: 
@@ -146,6 +144,26 @@ def DataEncode1048576(data):
         finallist.append('\U00100006' * (20 - len(splitdata[-1])))
 
     return convert(finallist)
+
+def FileEncode1048576(file):
+    data = file.read()
+    bins = []
+    new = ""
+    for char in data:
+        bins.append(bin(ord(char)))
+    for x in bins:
+        new += x.split('b')[1]
+    splitdata = [new[i:i+20] for i in range(0, len(new), 20)]
+    finallist = []
+        
+    for i in splitdata:
+        finallist.append(chr(int(i, base=2)))
+        
+    if len(splitdata[-1]) != 20:
+        finallist.append('\U00100006' * (20 - len(splitdata[-1])))
+
+    return convert(finallist)
+
 
 
 def add(*argv):
