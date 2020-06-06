@@ -99,7 +99,7 @@ def FromBase1048576(unicodestring):
 
 
             for lowernum in lowerdigits:
-                final += (num * pow(1048576, -(digits.index(num-1))))
+                final += (lowernum * pow(1048576, -(digits.index(lowernum)+1)))
                 
         return -final
 
@@ -118,14 +118,36 @@ def FromBase1048576(unicodestring):
         if hasDecimals:
             #lowerdigits.reverse()
             
-            for lowerchar in range(0, len(lowerchars)):
-                lowerdigits.append(ord(lowerchars[lowerchar]))
+            for lowerchar in lowerchars:
+                lowerdigits.append(ord(lowerchar))
+
 
             for lowernum in lowerdigits:
-                lowerfinal += 1048576*lowernum
-            lowerfinal = lowerfinal/pow(10, len(str(lowerfinal)))
-            print(lowerfinal)
-            
-            return final + lowerfinal
+                final += (lowernum * pow(1048576, -(lowerdigits.index(lowernum)+1)))
+                
+        return final
 
+def add(*argv):
+    if(len(argv) < 2):
+        raise TypeError("Insufficient Arguments")
+    total = 0
+    for arg in argv:
+        total += FromBase1048576(arg)
+
+    return ToBase1048576(total)
+
+def sub(a, b):
+    return ToBase1048576(FromBase1048576(a) - FromBase1048576(b))
+
+def mul(*argv):
+    if(len(argv) < 2):
+        raise TypeError("Insufficient Arguments")
+    total = 1
+    for arg in argv:
+        total *= FromBase1048576(arg)
+
+    return ToBase1048576(total)
+
+def div(a, b):
+    return ToBase1048576(FromBase1048576(a) / FromBase1048576(b))
 	
