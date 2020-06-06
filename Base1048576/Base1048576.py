@@ -2,7 +2,9 @@
 # By Kevin Chen
 
 # Note: When converting decimals, a character of unicode '\U00100004' will be added, to represent a decimal point, as it is out of the range of characters 1-1048576.
-# Also, negitive signs will be represented by '\U00100005'.
+# Also, negitive signs will be represented by '\U00100005' and when encoding text, extra chars will be represented by '\U00100006'.
+
+# todo: cannot decode base 1048576 data
 
 
 import math
@@ -125,6 +127,26 @@ def FromBase1048576(unicodestring):
                 final += (lowernum * pow(1048576, -(lowerdigits.index(lowernum)+1)))
                 
         return final
+
+
+def DataEncode1048576(data):
+    bins = []
+    new = ""
+    for char in data:
+        bins.append(bin(ord(char)))
+    for x in bins:
+        new += x.split('b')[1]
+    splitdata = [new[i:i+20] for i in range(0, len(new), 20)]
+    finallist = []
+        
+    for i in splitdata:
+        finallist.append(chr(int(i, base=2)))
+        
+    if len(splitdata[-1]) != 20:
+        finallist.append('\U00100006' * (20 - len(splitdata[-1])))
+
+    return convert(finallist)
+
 
 def add(*argv):
     if(len(argv) < 2):
