@@ -4,7 +4,6 @@
 # Note: When converting decimals, a character of unicode '\U00100004' will be added, to represent a decimal point, as it is out of the range of characters 1-1048576.
 # Also, negitive signs will be represented by '\U00100005' and when encoding text, extra chars will be represented by '\U00100006'.
 
-# todo: cannot decode base 1048576 data
 
 import math
 
