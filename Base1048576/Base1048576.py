@@ -90,9 +90,6 @@ def FromBase1048576(unicodestring):
             
             final += (num * pow(1048576, (digits.index(num-1))))
         if hasDecimals:
-            
-            #lowerdigits.reverse()
-
             for lowerchar in range(1, len(lowerchars)):
                 lowerdigits.append(ord(lowerchars[lowerchar]))
 
@@ -115,8 +112,6 @@ def FromBase1048576(unicodestring):
             final += (num * pow(1048576, (digits.index(num))))
 
         if hasDecimals:
-            #lowerdigits.reverse()
-            
             for lowerchar in lowerchars:
                 lowerdigits.append(ord(lowerchar))
 
@@ -129,41 +124,49 @@ def FromBase1048576(unicodestring):
 
 def DataEncode1048576(data):
     bins = []
-    new = ""
+    new = ''
     for char in data:
-        bins.append(bin(ord(char)))
+        bins.append(format(ord(char), '08b'))
     for x in bins:
-        new += x.split('b')[1]
+        new += x
     splitdata = [new[i:i+20] for i in range(0, len(new), 20)]
     finallist = []
-        
     for i in splitdata:
         finallist.append(chr(int(i, base=2)))
-        
-    if len(splitdata[-1]) != 20:
-        finallist.append('\U00100006' * (20 - len(splitdata[-1])))
 
     return convert(finallist)
 
 def FileEncode1048576(file):
     data = file.read()
     bins = []
-    new = ""
+    new = ''
     for char in data:
-        bins.append(bin(ord(char)))
+        bins.append(format(ord(char), '08b'))
     for x in bins:
-        new += x.split('b')[1]
+        new += x
     splitdata = [new[i:i+20] for i in range(0, len(new), 20)]
     finallist = []
-        
     for i in splitdata:
         finallist.append(chr(int(i, base=2)))
-        
-    if len(splitdata[-1]) != 20:
-        finallist.append('\U00100006' * (20 - len(splitdata[-1])))
 
     return convert(finallist)
 
+def DataDecode1048576(data):
+    chars = splitnum(data)
+    bindata = []
+    binstr = ''
+    for char in chars:
+        if len(format(ord(char), '08b')) < 20:
+            bindata.append(('0' * (20 - len(format(ord(char), '08b')))) + format(ord(char), '08b'))
+        else:
+            bindata.append(format(ord(char), '08b'))
+    binstr = convert(bindata)
+    splitdata = [binstr[i:i+8] for i in range(0, len(binstr), 8)]
+    final = ''
+    for i in splitdata:
+        final += chr(int(i, 2))
+
+    return final
 
 
 def add(*argv):
