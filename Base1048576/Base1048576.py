@@ -11,8 +11,6 @@
 
 import math
 
-MAX_DECIMAL_PLACES = 10
-
 def splitnum(num): 
     return [char for char in num]
 
@@ -25,7 +23,12 @@ def convert(s):
     return new 
 
 
-def ToBase1048576(num):
+def ToBase1048576(num, **kwargs):
+
+    MAX_DECIMAL_PLACES = 10
+
+    if kwargs.get('maxDecimals') != None:
+        MAX_DECIMAL_PLACES = kwargs.get('maxDecimals')
     
     if num < 0:
         sign = -1
