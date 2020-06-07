@@ -1,8 +1,12 @@
+#!python3
+
 # Base 1,048,576 Converter
 # By Kevin Chen
 
 # Note: When converting decimals, a character of unicode '\U00100004' will be added, to represent a decimal point, as it is out of the range of characters 1-1048576.
-# Also, negitive signs will be represented by '\U00100005' and when encoding text, extra chars will be represented by '\U00100006'.
+# Also, negitive signs will be represented by '\U00100005'.
+
+# Copyright Kevin Chen 2020
 
 
 import math
@@ -65,7 +69,7 @@ def ToBase1048576(num):
         return convert(digits + [chr(1048580)] + decimalDigits)
 
 
-def FromBase1048576(unicodestring):
+def FromBase1048576(unicodestring, **kwargs):
     chars = unicodestring.split('\U00100004')
     upperchars = splitnum(chars[0])
     hasDecimals = True
@@ -80,28 +84,9 @@ def FromBase1048576(unicodestring):
 
     
     if upperchars[0] == '\U00100005':
-        for upperchar in range(1, len(upperchars)):
-            digits.append(ord(upperchars[upperchar]))
-
-        digits.reverse()
-
-        for num in digits:
-            
-            final += (num * pow(1048576, (digits.index(num-1))))
-        if hasDecimals:
-            for lowerchar in range(1, len(lowerchars)):
-                lowerdigits.append(ord(lowerchars[lowerchar]))
-
-
-            for lowernum in lowerdigits:
-                final += (lowernum * pow(1048576, -(digits.index(lowernum)+1)))
-                
-        return -final
-
-                
-    else:
-        for upperchar in range(0, len(upperchars)):
-            digits.append(ord(upperchars[upperchar]))
+        upperchars.remove(upperchars[0])
+        for upperchar in upperchars:
+            digits.append(ord(upperchar))
         final = 0
         lowerfinal = 0
             
@@ -118,7 +103,35 @@ def FromBase1048576(unicodestring):
             for lowernum in lowerdigits:
                 final += (lowernum * pow(1048576, -(lowerdigits.index(lowernum)+1)))
                 
-        return final
+        if kwargs.get("round") == True:
+            return int(-final)
+        else:
+            return -final
+
+                
+    else:
+        for upperchar in upperchars:
+            digits.append(ord(upperchar))
+        final = 0
+        lowerfinal = 0
+            
+        digits.reverse()
+
+        for num in digits:
+            final += (num * pow(1048576, (digits.index(num))))
+
+        if hasDecimals:
+            for lowerchar in lowerchars:
+                lowerdigits.append(ord(lowerchar))
+
+
+            for lowernum in lowerdigits:
+                final += (lowernum * pow(1048576, -(lowerdigits.index(lowernum)+1)))
+
+        if kwargs.get("round") == True:
+            return int(final)
+        else:
+            return final
 
 
 def DataEncode1048576(data):
