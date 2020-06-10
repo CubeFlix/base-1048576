@@ -4,7 +4,7 @@
 # By Kevin Chen
 
 # Note: When converting decimals, a character of unicode '\U00100004' will be added, to represent a decimal point, as it is out of the range of characters 1-1048576.
-# Also, negitive signs will be represented by '\U00100005'.
+# Also, negitive signs will be represented by '\U00100005' and '\U00100006' will represent extra bits when encoding data.
 
 # Copyright Kevin Chen 2020
 
@@ -145,10 +145,16 @@ def DataEncode1048576(data):
     for x in bins:
         new += x
     splitdata = [new[i:i+20] for i in range(0, len(new), 20)]
+    
+    print(splitdata)
     finallist = []
     for i in splitdata:
         finallist.append(chr(int(i, base=2)))
-
+    extra = 20 - len(bin(ord(finallist[-1])).split('b')[1])
+    print(len(bin(ord(finallist[-1])).split('b')[1]))
+    for e in range(0, extra):
+        finallist.append('\U00100006')
+        
     return convert(finallist)
 
 def FileEncode1048576(file):
@@ -160,27 +166,34 @@ def FileEncode1048576(file):
     for x in bins:
         new += x
     splitdata = [new[i:i+20] for i in range(0, len(new), 20)]
+    
+
     finallist = []
     for i in splitdata:
         finallist.append(chr(int(i, base=2)))
-
+    extra = 20 - len(bin(ord(finallist[-1])).split('b')[1])
+    print(len(bin(ord(finallist[-1])).split('b')[1]))
+    for e in range(0, extra):
+        finallist.append('\U00100006')
+        
     return convert(finallist)
 
 def DataDecode1048576(data):
     chars = splitnum(data)
     bindata = []
-    binstr = ''
+    ext = chars.count('\U00100006')
     for char in chars:
-        if len(format(ord(char), '08b')) < 20:
-            bindata.append(('0' * (20 - len(format(ord(char), '08b')))) + format(ord(char), '08b'))
-        else:
+        if char != '\U00100006':
             bindata.append(format(ord(char), '08b'))
     binstr = convert(bindata)
-    splitdata = [binstr[i:i+8] for i in range(0, len(binstr), 8)]
+    split20 = [binstr[i:i+20] for i in range(0, len(binstr), 20)]
+    split20[-1] = split20[-1][ext:]
+    finbin = convert(split20)
+    splitdata = [finbin[i:i+8] for i in range(0, len(finbin), 8)]
+    print(splitdata)
     final = ''
     for i in splitdata:
         final += chr(int(i, 2))
-
     return final
 
 
