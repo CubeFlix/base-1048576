@@ -137,6 +137,66 @@ def FromBase1048576(unicodestring, **kwargs):
             return final
 
 
+def DataEncode1048576(data):
+    bins = []
+    new = ''
+    for char in data:
+        bins.append(format(ord(char), '08b'))
+    for x in bins:
+        new += x
+    splitdata = [new[i:i+20] for i in range(0, len(new), 20)]
+    
+    print(splitdata)
+    finallist = []
+    for i in splitdata:
+        finallist.append(chr(int(i, base=2)))
+    extra = 20 - len(bin(ord(finallist[-1])).split('b')[1])
+    print(len(bin(ord(finallist[-1])).split('b')[1]))
+    for e in range(0, extra):
+        finallist.append('\U00100006')
+        
+    return convert(finallist)
+
+def FileEncode1048576(file):
+    data = file.read()
+    bins = []
+    new = ''
+    for char in data:
+        bins.append(format(ord(char), '08b'))
+    for x in bins:
+        new += x
+    splitdata = [new[i:i+20] for i in range(0, len(new), 20)]
+    
+
+    finallist = []
+    for i in splitdata:
+        finallist.append(chr(int(i, base=2)))
+    extra = 20 - len(bin(ord(finallist[-1])).split('b')[1])
+    print(len(bin(ord(finallist[-1])).split('b')[1]))
+    for e in range(0, extra):
+        finallist.append('\U00100006')
+        
+    return convert(finallist)
+
+def DataDecode1048576(data):
+    chars = splitnum(data)
+    bindata = []
+    ext = chars.count('\U00100006')
+    for char in chars:
+        if char != '\U00100006':
+            bindata.append(format(ord(char), '08b'))
+    binstr = convert(bindata)
+    split20 = [binstr[i:i+20] for i in range(0, len(binstr), 20)]
+    split20[-1] = split20[-1][ext:]
+    finbin = convert(split20)
+    splitdata = [finbin[i:i+8] for i in range(0, len(finbin), 8)]
+    print(splitdata)
+    final = ''
+    for i in splitdata:
+        final += chr(int(i, 2))
+    return final
+
+
 def add(*argv):
     if(len(argv) < 2):
         raise TypeError("Insufficient Arguments")
